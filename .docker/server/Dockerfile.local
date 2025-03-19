@@ -1,0 +1,16 @@
+FROM node:lts-alpine
+
+RUN apk add --no-cache libc6-compat python3 make g++
+RUN apk update
+RUN corepack enable pnpm
+ENV PNPM_HOME=/usr/local/bin
+
+WORKDIR /app
+
+COPY . /app/
+
+ENV NODE_OPTIONS="--max-http-header-size=81920 --max-old-space-size=4096"
+
+RUN pnpm install
+
+CMD pnpm start:dev

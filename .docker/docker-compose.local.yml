@@ -1,0 +1,52 @@
+name: translator
+
+services:
+  postgres:
+    container_name: translator_database
+    image: postgres:latest
+    env_file:
+      - .env.local
+    expose:
+      - ${DATABASE_PORT}
+    ports:
+      - '${DATABASE_PORT}:${DATABASE_PORT}'
+    volumes:
+      - translator_database_data:/var/lib/postgresql/data
+      - ./.docker/postgres/potgresql.conf:/etc/postgresql.conf
+    command: -c config_file=/etc/postgresql.conf
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    restart: unless-stopped
+    networks:
+      - translator_local
+
+  server:
+    container_name: translator_server
+    image: translator_server:0.0.1-local
+    build:
+      context: .
+      dockerfile: ./.docker/server/Dockerfile.local
+    env_file:
+      - .env.local
+    expose:
+      - ${SERVER_PORT}
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    depends_on:
+      - postgres
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    restart: unless-stopped
+
+    networks:
+      - translator_local
+
+volumes:
+  translator_database_data:
+
+networks:
+  translator_local:
+    driver: bridge
