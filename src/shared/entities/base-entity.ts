@@ -1,12 +1,14 @@
 import {
   BaseEntity as MikroBaseEntity,
-  Config,
-  DefineConfig,
   Entity,
   Filter,
   OptionalProps,
   PrimaryKey,
   Property,
+  serialize,
+  AutoPath,
+  PopulatePath,
+  UnboxArray,
 } from '@mikro-orm/postgresql';
 
 @Entity({
@@ -20,7 +22,6 @@ import {
 })
 export class BaseEntity extends MikroBaseEntity {
   [OptionalProps]?: 'id' | 'createdAt' | 'updatedAt' | 'deletedAt';
-  [Config]?: DefineConfig<{ forceObject: true }>;
 
   @PrimaryKey()
   id!: number;
@@ -34,8 +35,21 @@ export class BaseEntity extends MikroBaseEntity {
   @Property({ type: Date, nullable: true })
   deletedAt?: Date | null;
 
-  toJSON() {
-    return this.toObject();
+  toJSON<T extends this, P extends string = never, E extends string = never>({
+    populate,
+    exclude,
+  }: {
+    populate?: readonly AutoPath<UnboxArray<T>, P, `${PopulatePath.ALL}`>[];
+    exclude?: readonly AutoPath<T, E>[];
+  } = {}): Record<string, any> {
+    return serialize(this, {
+      populate: populate as readonly AutoPath<
+        UnboxArray<this>,
+        P,
+        `${PopulatePath.ALL}`
+      >[],
+      exclude: exclude as readonly AutoPath<UnboxArray<this>, E>[],
+    });
   }
 
   constructor(data: Partial<BaseEntity> = {}) {

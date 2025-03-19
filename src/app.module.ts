@@ -11,6 +11,11 @@ import {
 } from '@mikro-orm/postgresql';
 import { LoggerMiddleware } from './app.middleware';
 import { LangCodesModule } from './lang-codes/lang-codes.module';
+import { GlossariesModule } from './glossaries/glossaries.module';
+import { TermsModule } from './terms/terms.module';
+import { TranslationsModule } from './translations/translations.module';
+import { IsLanguageCode } from './shared/validators/is-language-code.validator';
+import { DatabaseSeeder } from './database/seeders/database.seeder';
 
 @Module({
   imports: [
@@ -26,15 +31,20 @@ import { LangCodesModule } from './lang-codes/lang-codes.module';
       inject: [ConfigService],
     }),
     LangCodesModule,
+    GlossariesModule,
+    TermsModule,
+    TranslationsModule,
   ],
-  providers: [],
+  providers: [IsLanguageCode],
 })
 export class AppModule implements OnModuleInit {
   constructor(private readonly orm: MikroORM) {}
 
   @CreateRequestContext()
   async onModuleInit() {
+    // automatically runs migrations and seeds the database
     await this.orm.getMigrator().up();
+    await this.orm.getSeeder().seed(DatabaseSeeder);
   }
 
   configure(consumer: MiddlewareConsumer) {

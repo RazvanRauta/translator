@@ -49,7 +49,7 @@ async function bootstrap() {
   await app.listen(port, host);
 
   Logger.log(
-    `🚀 ${appName} is running on: http://${host}:${port}/${globalPrefix}`,
+    `🚀 ${appName} is running on: http://${host}:${port}/v1/${globalPrefix}`,
   );
 }
 void bootstrap();

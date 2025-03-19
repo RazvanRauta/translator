@@ -2,7 +2,7 @@ import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Seeder } from '@mikro-orm/seeder';
 import * as fs from 'fs';
-import csvParser from 'csv-parser';
+import * as csvParser from 'csv-parser';
 
 export type LanguageCodeRow = {
   code: string;
@@ -14,6 +14,7 @@ export class LanguageCodesSeeder extends Seeder {
     const total = await em.count(LanguageCode, {});
 
     if (total > 0) {
+      console.log('Language codes have already been seeded');
       return;
     }
 
