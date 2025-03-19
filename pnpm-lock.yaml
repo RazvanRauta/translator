@@ -96,6 +96,9 @@ importers:
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.2
+      csv-parser:
+        specifier: ^3.2.0
+        version: 3.2.0
       eslint:
         specifier: ^9.18.0
         version: 9.22.0
@@ -1754,6 +1757,11 @@ packages:
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
+
+  csv-parser@3.2.0:
+    resolution: {integrity: sha512-fgKbp+AJbn1h2dcAHKIdKNSSjfp43BZZykXsCjzALjKy80VXQNHPFJ6T9Afwdzoj24aMkq8GwDS7KGcDPpejrA==}
+    engines: {node: '>= 10'}
+    hasBin: true
 
   dataloader@2.2.3:
     resolution: {integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA==}
@@ -5844,6 +5852,8 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
+  csv-parser@3.2.0: {}
+
   dataloader@2.2.3: {}
 
   debug@4.3.4:
@@ -7584,7 +7594,7 @@ snapshots:
 
   send@1.1.0:
     dependencies:
-      debug: 4.3.6
+      debug: 4.4.0
       destroy: 1.2.0
       encodeurl: 2.0.0
       escape-html: 1.0.3

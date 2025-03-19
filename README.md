@@ -18,7 +18,7 @@ make docker-build-local
 make docker-run-local
 
 # 5. Run Migrations after the DB is up and running
-cd apps/server && npx mikro-orm migration:up
+npx mikro-orm migration:up
     # or
 npx mikro-orm migration:fresh --seed # will drop the database, run all migrations and the DatabaseSeeder class
 

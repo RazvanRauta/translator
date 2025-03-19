@@ -4,8 +4,13 @@ import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
 import { createDbConfig } from './database/create-db-config';
 import appConfig from './config/app.config';
 import databaseConfig from './database/config/database.config';
-import { CreateRequestContext, MikroORM } from '@mikro-orm/postgresql';
+import {
+  CreateRequestContext,
+  MikroORM,
+  PostgreSqlDriver,
+} from '@mikro-orm/postgresql';
 import { LoggerMiddleware } from './app.middleware';
+import { LangCodesModule } from './lang-codes/lang-codes.module';
 
 @Module({
   imports: [
@@ -15,10 +20,12 @@ import { LoggerMiddleware } from './app.middleware';
       envFilePath: '.env.local',
     }),
     MikroOrmModule.forRootAsync({
+      driver: PostgreSqlDriver,
       useFactory: (configService: ConfigService) =>
         createDbConfig(configService),
       inject: [ConfigService],
     }),
+    LangCodesModule,
   ],
   providers: [],
 })
@@ -31,6 +38,6 @@ export class AppModule implements OnModuleInit {
   }
 
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware, MikroOrmMiddleware).forRoutes('*');
+    consumer.apply(LoggerMiddleware, MikroOrmMiddleware).forRoutes('*path');
   }
 }
