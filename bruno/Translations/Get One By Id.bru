@@ -1,0 +1,15 @@
+meta {
+  name: Get One By Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/translations/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 1
+}

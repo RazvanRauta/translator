@@ -1,0 +1,18 @@
+meta {
+  name: Create
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/glossaries
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "de"
+  }
+}

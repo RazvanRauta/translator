@@ -1,0 +1,19 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/translations
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "sourceLanguageCode": "en",
+    "targetLanguageCode": "de",
+    "sourceText": "This is a recruitment task."
+  }
+}

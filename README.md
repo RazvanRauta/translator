@@ -19,13 +19,17 @@ make docker-run-local
 
 # 5. Run Migrations after the DB is up and running
 npx mikro-orm migration:up
-    # or
+# or
 npx mikro-orm migration:fresh --seed # will drop the database, run all migrations and the DatabaseSeeder class
 
 # 6. Optional Run seeds after migrations
-npx mikro-orm seeder:run  # also in apps/server folder
+npx mikro-orm seeder:run  # also in server folder
 
 # 7. To delete everything run:
 make docker-down-local
 
 ```
+
+## Bruno
+
+- Bruno collection can be found [HERE](./bruno)
