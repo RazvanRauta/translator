@@ -2,7 +2,7 @@ import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Seeder } from '@mikro-orm/seeder';
 import * as fs from 'fs';
-import * as csvParser from 'csv-parser';
+import { parse } from 'csv-parse';
 
 export type LanguageCodeRow = {
   code: string;
@@ -20,24 +20,30 @@ export class LanguageCodesSeeder extends Seeder {
 
     const languageCodes: LanguageCode[] = [];
 
-    fs.createReadStream('src/lang-codes/language-codes.csv')
-      .pipe(csvParser())
-      .on('data', (row: LanguageCodeRow) => {
-        const languageCode = em.create(LanguageCode, {
-          code: row.code,
-          country: row.country,
-        });
-        languageCodes.push(languageCode);
+    const parser = fs
+      .createReadStream('src/lang-codes/language-codes.csv')
+      .pipe(
+        parse({
+          fromLine: 2,
+          columns: ['code', 'country'],
+        }),
+      );
+    for await (const record of parser) {
+      const { code, country } = record as LanguageCodeRow;
+      const languageCode = em.create(LanguageCode, {
+        code,
+        country,
+      });
+      languageCodes.push(languageCode);
+    }
+
+    em.persist(languageCodes)
+      .flush()
+      .then(() => {
+        console.log('Language codes have been seeded');
       })
-      .on('end', () => {
-        em.persist(languageCodes)
-          .flush()
-          .then(() => {
-            console.log('Language codes have been seeded');
-          })
-          .catch((e) => {
-            console.error(e);
-          });
+      .catch((e) => {
+        console.error(e);
       });
   }
 }
