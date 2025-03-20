@@ -11,20 +11,18 @@ import { Injectable } from '@nestjs/common';
 import { BaseDto } from '@/shared/dto/base.dto';
 import { BaseEntity } from '@/shared/entities/base-entity';
 
-import { GlossaryDto } from '../dto/glossary.dto';
-import { SlimGlossaryDto } from '../dto/slim-glossary.dto';
-import { Glossary } from '../entities/glossary.entity';
+import { TranslationDto } from '../dto/translation.dto';
+import { Translation } from '../entities/translation.entity';
 
 @Injectable()
-export class GlossaryProfile extends AutomapperProfile {
+export class TranslationProfile extends AutomapperProfile {
   constructor(@InjectMapper() mapper: Mapper) {
     super(mapper);
   }
 
   get profile(): MappingProfile {
     return (mapper) => {
-      createMap(mapper, Glossary, GlossaryDto);
-      createMap(mapper, Glossary, SlimGlossaryDto);
+      createMap(mapper, Translation, TranslationDto);
     };
   }
 

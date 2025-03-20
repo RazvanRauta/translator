@@ -1,3 +1,5 @@
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
 import { EntityManager } from '@mikro-orm/core';
 import {
   BadRequestException,
@@ -9,11 +11,15 @@ import { Glossary } from '@/glossaries/entities/glossary.entity';
 import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
 
 import { CreateTranslationDto } from './dto/create-translation.dto';
+import { TranslationDto } from './dto/translation.dto';
 import { Translation } from './entities/translation.entity';
 
 @Injectable()
 export class TranslationsService {
-  constructor(private readonly em: EntityManager) {}
+  constructor(
+    private readonly em: EntityManager,
+    @InjectMapper() private readonly mapper: Mapper,
+  ) {}
 
   async create(createTranslationDto: CreateTranslationDto) {
     const { sourceLanguageCode, targetLanguageCode, sourceText, glossaryId } =
@@ -63,14 +69,12 @@ export class TranslationsService {
     });
 
     await this.em.persistAndFlush(translation);
-    return translation.toJSON();
+    return this.mapper.map(translation, Translation, TranslationDto);
   }
 
-  async findOne(id: number): Promise<{
-    [key: string]: any;
-  }> {
+  async findOne(id: number) {
     const translation = await this.em.findOneOrFail(Translation, id, {
-      populate: ['glossary.terms'],
+      populate: ['glossary.terms', 'sourceLanguageCode', 'targetLanguageCode'],
     });
 
     let highlightedSourceText = translation.sourceText;
@@ -88,6 +92,7 @@ export class TranslationsService {
       });
     }
 
-    return { ...translation.toJSON(), sourceText: highlightedSourceText };
+    const dto = this.mapper.map(translation, Translation, TranslationDto);
+    return { ...dto, sourceText: highlightedSourceText };
   }
 }
