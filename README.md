@@ -1,5 +1,6 @@
 # Translator API
 
+![e2e workflow](https://github.com/RazvanRauta/translator/actions/workflows/e2e-tests.yml/badge.svg)
 
 ### Local
 
