@@ -13,6 +13,18 @@ import {
 } from './response-types';
 import { clearDatabase } from './utils/clearDatabase';
 
+const createGlossaryDto: CreateGlossaryDto = {
+  sourceLanguageCode: 'en',
+  targetLanguageCode: 'es',
+};
+
+async function createDefaultGlossary(app: NestFastifyApplication) {
+  return await request(app.getHttpServer())
+    .post('/glossaries')
+    .send(createGlossaryDto)
+    .expect(201);
+}
+
 describe('GlossariesController (e2e)', () => {
   let app: NestFastifyApplication;
   let orm: MikroORM;
@@ -37,15 +49,7 @@ describe('GlossariesController (e2e)', () => {
   });
 
   it('/glossaries (POST)', async () => {
-    const createGlossaryDto: CreateGlossaryDto = {
-      sourceLanguageCode: 'en',
-      targetLanguageCode: 'es',
-    };
-
-    const response = await request(app.getHttpServer())
-      .post('/glossaries')
-      .send(createGlossaryDto)
-      .expect(201);
+    const response = await createDefaultGlossary(app);
 
     const responseBody = response.body as GlossaryResponse;
     expect(responseBody.data).toHaveProperty('id');
@@ -53,25 +57,40 @@ describe('GlossariesController (e2e)', () => {
     expect(responseBody.data.targetLanguageCode.code).toBe('es');
   });
 
+  it('/glossaries (POST) conflict', async () => {
+    const response = await createDefaultGlossary(app);
+
+    const responseBody = response.body as GlossaryResponse;
+    expect(responseBody.data).toHaveProperty('id');
+    expect(responseBody.data.sourceLanguageCode.code).toBe('en');
+    expect(responseBody.data.targetLanguageCode.code).toBe('es');
+
+    const errorResponse = await request(app.getHttpServer())
+      .post('/glossaries')
+      .send(createGlossaryDto)
+      .expect(409);
+
+    expect(errorResponse.body).toMatchObject({
+      statusCode: 409,
+      error: 'Conflict',
+      message: 'Glossary already exists for these language codes',
+    });
+  });
+
   it('/glossaries (GET)', async () => {
+    await createDefaultGlossary(app);
+
     const response = await request(app.getHttpServer())
       .get('/glossaries')
       .expect(200);
 
     const responseBody = response.body as GlossariesResponse;
     expect(responseBody.data).toBeInstanceOf(Array);
+    expect(responseBody.data[0].id).toBeDefined();
   });
 
   it('/glossaries/:id (GET)', async () => {
-    const createGlossaryDto: CreateGlossaryDto = {
-      sourceLanguageCode: 'en',
-      targetLanguageCode: 'es',
-    };
-
-    const createResponse = await request(app.getHttpServer())
-      .post('/glossaries')
-      .send(createGlossaryDto)
-      .expect(201);
+    const createResponse = await createDefaultGlossary(app);
 
     const glossaryResponseBody = createResponse.body as GlossaryResponse;
     const glossaryId = glossaryResponseBody.data.id;
@@ -84,16 +103,20 @@ describe('GlossariesController (e2e)', () => {
     expect(responseBody.data).toHaveProperty('id', glossaryId);
   });
 
-  it('/glossaries/:id/terms (POST)', async () => {
-    const createGlossaryDto: CreateGlossaryDto = {
-      sourceLanguageCode: 'en',
-      targetLanguageCode: 'es',
-    };
+  it('/glossaries/:id (GET) - id not found', async () => {
+    const response = await request(app.getHttpServer())
+      .get(`/glossaries/10`)
+      .expect(404);
 
-    const createGlossaryResponse = await request(app.getHttpServer())
-      .post('/glossaries')
-      .send(createGlossaryDto)
-      .expect(201);
+    expect(response.body).toMatchObject({
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'Glossary with id: 10 not found',
+    });
+  });
+
+  it('/glossaries/:id/terms (POST)', async () => {
+    const createGlossaryResponse = await createDefaultGlossary(app);
 
     const glossaryResponseBody =
       createGlossaryResponse.body as GlossaryResponse;
@@ -113,5 +136,41 @@ describe('GlossariesController (e2e)', () => {
     expect(responseBody.data).toHaveProperty('id');
     expect(responseBody.data.sourceTerm).toBe('hello');
     expect(responseBody.data.targetTerm).toBe('hola');
+  });
+
+  it('/glossaries/:id/terms (POST) - id is not a number', async () => {
+    const createTermDto: CreateTermDto = {
+      sourceTerm: 'hello',
+      targetTerm: 'hola',
+    };
+
+    const response = await request(app.getHttpServer())
+      .post(`/glossaries/bla/terms`)
+      .send(createTermDto)
+      .expect(400);
+
+    expect(response.body).toMatchObject({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: 'Invalid ID format',
+    });
+  });
+
+  it('/glossaries/:id/terms (POST) - id not found', async () => {
+    const createTermDto: CreateTermDto = {
+      sourceTerm: 'hello',
+      targetTerm: 'hola',
+    };
+
+    const response = await request(app.getHttpServer())
+      .post(`/glossaries/10/terms`)
+      .send(createTermDto)
+      .expect(404);
+
+    expect(response.body).toMatchObject({
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'Glossary with id: 10 not found',
+    });
   });
 });

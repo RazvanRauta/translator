@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -56,8 +57,12 @@ export class GlossariesController {
   @ApiOkResponse({ type: ApiResponse(GlossaryDto) })
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<ApiResponseDto<GlossaryDto>> {
-    const data = await this.glossariesService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<ApiResponseDto<GlossaryDto>> {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    const data = await this.glossariesService.findOne(+id);
     return { data };
   }
 
@@ -70,10 +75,14 @@ export class GlossariesController {
   @HttpCode(HttpStatus.CREATED)
   @Post(':id/terms')
   async createTerm(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() createTermDto: CreateTermDto,
   ): Promise<ApiResponseDto<TermDto>> {
-    const data = await this.glossariesService.createTerm(id, createTermDto);
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    const data = await this.glossariesService.createTerm(+id, createTermDto);
     return { data };
   }
 }
