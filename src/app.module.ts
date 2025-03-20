@@ -1,21 +1,23 @@
-import { MiddlewareConsumer, Module, OnModuleInit } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
-import { createDbConfig } from './database/create-db-config';
-import appConfig from './config/app.config';
-import databaseConfig from './database/config/database.config';
 import {
   CreateRequestContext,
   MikroORM,
   PostgreSqlDriver,
 } from '@mikro-orm/postgresql';
+import { MiddlewareConsumer, Module, OnModuleInit } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { LoggerMiddleware } from './app.middleware';
-import { LangCodesModule } from './lang-codes/lang-codes.module';
+import appConfig from './config/app.config';
+import databaseConfig from './database/config/database.config';
+import { createDbConfig } from './database/create-db-config';
+import { DatabaseSeeder } from './database/seeders/database.seeder';
 import { GlossariesModule } from './glossaries/glossaries.module';
+import { LangCodesModule } from './lang-codes/lang-codes.module';
+import { MapperModule } from './mapper/mapper.module';
+import { IsLanguageCode } from './shared/validators/is-language-code.validator';
 import { TermsModule } from './terms/terms.module';
 import { TranslationsModule } from './translations/translations.module';
-import { IsLanguageCode } from './shared/validators/is-language-code.validator';
-import { DatabaseSeeder } from './database/seeders/database.seeder';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { DatabaseSeeder } from './database/seeders/database.seeder';
       load: [appConfig, databaseConfig],
       envFilePath: '.env.local',
     }),
+    MapperModule,
     MikroOrmModule.forRootAsync({
       driver: PostgreSqlDriver,
       useFactory: (configService: ConfigService) =>

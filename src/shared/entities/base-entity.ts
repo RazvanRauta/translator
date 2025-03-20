@@ -1,28 +1,23 @@
+import { AutoMap } from '@automapper/classes';
 import {
+  AutoPath,
   BaseEntity as MikroBaseEntity,
   Entity,
-  Filter,
   OptionalProps,
+  PopulatePath,
   PrimaryKey,
   Property,
   serialize,
-  AutoPath,
-  PopulatePath,
   UnboxArray,
 } from '@mikro-orm/postgresql';
 
 @Entity({
   abstract: true,
 })
-// apply filter to all queries by default
-@Filter({
-  name: 'notDeleted',
-  cond: { deletedAt: { $eq: null } },
-  default: true,
-})
 export class BaseEntity extends MikroBaseEntity {
   [OptionalProps]?: 'id' | 'createdAt' | 'updatedAt' | 'deletedAt';
 
+  @AutoMap(() => Number)
   @PrimaryKey()
   id!: number;
 

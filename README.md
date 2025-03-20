@@ -30,6 +30,10 @@ make docker-down-local
 
 ```
 
+## Swagger Docs
+
+- Swagger Docs can be found here: [Swagger Docs](http://localhost:4000/docs)
+
 ## Bruno
 
 - Bruno collection can be found [HERE](./bruno)

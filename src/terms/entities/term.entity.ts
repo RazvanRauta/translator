@@ -1,6 +1,8 @@
+import { AutoMap } from '@automapper/classes';
+import { Entity, ManyToOne, Property } from '@mikro-orm/postgresql';
+
 import { Glossary } from '@/glossaries/entities/glossary.entity';
 import { BaseEntity } from '@/shared/entities/base-entity';
-import { Entity, ManyToOne, Property } from '@mikro-orm/postgresql';
 
 @Entity()
 export class Term extends BaseEntity {
@@ -11,9 +13,11 @@ export class Term extends BaseEntity {
   })
   glossary!: Glossary;
 
+  @AutoMap(() => String)
   @Property()
   sourceTerm!: string;
 
+  @AutoMap(() => String)
   @Property()
   targetTerm!: string;
 }

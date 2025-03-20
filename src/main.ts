@@ -1,18 +1,22 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import { useContainer } from 'class-validator';
-import { ConfigService } from '@nestjs/config';
-import { AllConfigType } from './config/config.type';
+import 'reflect-metadata';
+
 import {
   ClassSerializerInterceptor,
   Logger,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory, Reflector } from '@nestjs/core';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { useContainer } from 'class-validator';
+
+import { AppModule } from './app.module';
+import { AllConfigType } from './config/config.type';
 import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
 import validationOptions from './utils/validation-options';
 
@@ -41,6 +45,15 @@ async function bootstrap() {
     new ResolvePromisesInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
+
+  const options = new DocumentBuilder()
+    .setTitle('Translator API')
+    .setDescription('Translator docs')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('docs', app, document);
 
   const port = configService.getOrThrow('app.port', { infer: true });
   const appName = configService.getOrThrow('app.appName', { infer: true });
