@@ -1,10 +1,28 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 
+import { ApiResponse, ApiResponseDto } from '@/shared/dto/api-response.dto';
 import { CreateTermDto } from '@/terms/dto/create-term.dto';
+import { TermDto } from '@/terms/dto/term.dto';
 
 import { CreateGlossaryDto } from './dto/create-glossary.dto';
+import { GlossaryDto } from './dto/glossary.dto';
 import { GlossariesService } from './glossaries.service';
 
+@ApiTags('Glossaries')
 @Controller({
   path: 'glossaries',
   version: '1',
@@ -12,29 +30,50 @@ import { GlossariesService } from './glossaries.service';
 export class GlossariesController {
   constructor(private readonly glossariesService: GlossariesService) {}
 
+  @ApiCreatedResponse({ type: ApiResponse(GlossaryDto) })
+  @HttpCode(HttpStatus.CREATED)
   @Post()
-  async create(@Body() createGlossaryDto: CreateGlossaryDto) {
+  async create(
+    @Body() createGlossaryDto: CreateGlossaryDto,
+  ): Promise<ApiResponseDto<GlossaryDto>> {
     const data = await this.glossariesService.create(createGlossaryDto);
     return { data };
   }
 
+  @ApiOkResponse({ type: ApiResponse(GlossaryDto, { isArray: true }) })
+  @HttpCode(HttpStatus.OK)
   @Get()
-  async findAll() {
+  async findAll(): Promise<ApiResponseDto<GlossaryDto[]>> {
     const data = await this.glossariesService.findAll();
     return { data };
   }
 
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({ type: ApiResponse(GlossaryDto) })
+  @HttpCode(HttpStatus.OK)
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    const data = this.glossariesService.findOne(id);
+  async findOne(@Param('id') id: number): Promise<ApiResponseDto<GlossaryDto>> {
+    const data = await this.glossariesService.findOne(id);
     return { data };
   }
 
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiCreatedResponse({ type: ApiResponse(TermDto) })
+  @HttpCode(HttpStatus.CREATED)
   @Post(':id/terms')
   async createTerm(
     @Param('id') id: number,
     @Body() createTermDto: CreateTermDto,
-  ) {
-    return this.glossariesService.createTerm(id, createTermDto);
+  ): Promise<ApiResponseDto<TermDto>> {
+    const data = await this.glossariesService.createTerm(id, createTermDto);
+    return { data };
   }
 }

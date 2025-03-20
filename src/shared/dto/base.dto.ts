@@ -3,11 +3,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
 export class BaseDto {
-  @ApiProperty({ example: '1' })
+  @ApiProperty({ example: 1 })
   @IsString()
   @IsOptional()
-  @AutoMap(() => String)
-  id: string;
+  @AutoMap(() => Number)
+  id: number;
 
   constructor(data: Partial<BaseDto>) {
     Object.assign(this, data);

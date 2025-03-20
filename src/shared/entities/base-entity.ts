@@ -2,6 +2,8 @@ import { AutoMap } from '@automapper/classes';
 import {
   AutoPath,
   BaseEntity as MikroBaseEntity,
+  Config,
+  DefineConfig,
   Entity,
   OptionalProps,
   PopulatePath,
@@ -16,6 +18,7 @@ import {
 })
 export class BaseEntity extends MikroBaseEntity {
   [OptionalProps]?: 'id' | 'createdAt' | 'updatedAt' | 'deletedAt';
+  [Config]?: DefineConfig<{ forceObject: true }>;
 
   @AutoMap(() => Number)
   @PrimaryKey()

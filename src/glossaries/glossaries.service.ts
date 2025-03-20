@@ -1,3 +1,5 @@
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
 import { EntityManager } from '@mikro-orm/postgresql';
 import {
   ConflictException,
@@ -10,6 +12,7 @@ import { CreateTermDto } from '@/terms/dto/create-term.dto';
 import { TermsService } from '@/terms/terms.service';
 
 import { CreateGlossaryDto } from './dto/create-glossary.dto';
+import { GlossaryDto } from './dto/glossary.dto';
 import { Glossary } from './entities/glossary.entity';
 
 @Injectable()
@@ -17,6 +20,7 @@ export class GlossariesService {
   constructor(
     private readonly em: EntityManager,
     private readonly termsService: TermsService,
+    @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
   async create(createGlossaryDto: CreateGlossaryDto) {
@@ -54,7 +58,7 @@ export class GlossariesService {
       targetLanguageCode: targetLanguage,
     });
     await this.em.persistAndFlush(glossary);
-    return glossary.toJSON();
+    return this.mapper.map(glossary, Glossary, GlossaryDto);
   }
 
   async findAll() {
@@ -71,18 +75,7 @@ export class GlossariesService {
         ],
       },
     );
-    return glossaries.map((glossary) =>
-      glossary.toJSON({
-        populate: [
-          'terms.id',
-          'terms.sourceTerm',
-          'terms.targetTerm',
-          'sourceLanguageCode.code',
-          'targetLanguageCode.code',
-        ],
-        exclude: ['terms.glossary'],
-      }),
-    );
+    return this.mapper.mapArray(glossaries, Glossary, GlossaryDto);
   }
 
   async findOne(id: number) {
@@ -93,7 +86,7 @@ export class GlossariesService {
       throw new NotFoundException(`Glossary with id: ${id} not found`);
     }
 
-    return glossary.toJSON({ populate: ['terms'] });
+    return this.mapper.map(glossary, Glossary, GlossaryDto);
   }
 
   async createTerm(glossaryId: number, createTermDto: CreateTermDto) {
@@ -103,9 +96,9 @@ export class GlossariesService {
       `);
     }
 
-    const term = this.termsService.create(
+    const term = await this.termsService.create(
       createTermDto,
-      this.em.getReference(Glossary, glossary.id as number),
+      this.em.getReference(Glossary, glossary.id),
     );
     return term;
   }

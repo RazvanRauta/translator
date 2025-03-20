@@ -1,3 +1,4 @@
+import { AutoMap } from '@automapper/classes';
 import {
   Collection,
   Entity,
@@ -13,12 +14,15 @@ import { Term } from '@/terms/entities/term.entity';
 @Entity()
 @Unique({ properties: ['sourceLanguageCode', 'targetLanguageCode'] })
 export class Glossary extends BaseEntity {
+  @AutoMap(() => LanguageCode)
   @ManyToOne(() => LanguageCode)
   sourceLanguageCode!: LanguageCode;
 
+  @AutoMap(() => LanguageCode)
   @ManyToOne(() => LanguageCode)
   targetLanguageCode!: LanguageCode;
 
+  @AutoMap(() => [Term])
   @OneToMany(() => Term, (term) => term.glossary)
   terms = new Collection<Term>(this);
 }
