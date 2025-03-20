@@ -49,16 +49,26 @@ export class TranslationsService {
 
     let glossary: Glossary;
     if (glossaryId) {
-      glossary = await this.em.findOneOrFail(Glossary, {
+      const result = await this.em.findOne(Glossary, {
         id: glossaryId,
         sourceLanguageCode: sourceLanguage,
         targetLanguageCode: targetLanguage,
       });
+
+      if (!result) {
+        throw new NotFoundException('Glossary does not exist');
+      }
+      glossary = result;
     } else {
-      glossary = await this.em.findOneOrFail(Glossary, {
+      const result = await this.em.findOne(Glossary, {
         sourceLanguageCode: sourceLanguage,
         targetLanguageCode: targetLanguage,
       });
+
+      if (!result) {
+        throw new NotFoundException('Glossary does not exist');
+      }
+      glossary = result;
     }
 
     const translation = this.em.create(Translation, {
@@ -73,9 +83,13 @@ export class TranslationsService {
   }
 
   async findOne(id: number) {
-    const translation = await this.em.findOneOrFail(Translation, id, {
+    const translation = await this.em.findOne(Translation, id, {
       populate: ['glossary.terms', 'sourceLanguageCode', 'targetLanguageCode'],
     });
+
+    if (!translation) {
+      throw new NotFoundException(`Translation with id: ${id} not found`);
+    }
 
     let highlightedSourceText = translation.sourceText;
 

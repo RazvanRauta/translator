@@ -15,7 +15,7 @@ export class LanguageCodesSeeder extends Seeder {
     const total = await em.count(LanguageCode, {});
 
     if (total > 0) {
-      console.log('Language codes have already been seeded');
+      // already seeded
       return;
     }
 
@@ -29,6 +29,7 @@ export class LanguageCodesSeeder extends Seeder {
           columns: ['code', 'country'],
         }),
       );
+
     for await (const record of parser) {
       const { code, country } = record as LanguageCodeRow;
       const languageCode = em.create(LanguageCode, {
@@ -38,10 +39,6 @@ export class LanguageCodesSeeder extends Seeder {
       languageCodes.push(languageCode);
     }
 
-    em.persist(languageCodes)
-      .flush()
-      .catch((e) => {
-        console.error('Error seeding language codes', e);
-      });
+    await em.persist(languageCodes).flush();
   }
 }

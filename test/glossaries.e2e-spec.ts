@@ -44,7 +44,7 @@ describe('GlossariesController (e2e)', () => {
     await app.close();
   });
 
-  afterEach(async () => {
+  beforeEach(async () => {
     await clearDatabase(orm);
   });
 
