@@ -40,11 +40,8 @@ export class LanguageCodesSeeder extends Seeder {
 
     em.persist(languageCodes)
       .flush()
-      .then(() => {
-        console.log('Language codes have been seeded');
-      })
       .catch((e) => {
-        console.error(e);
+        console.error('Error seeding language codes', e);
       });
   }
 }

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { MikroORM } from '@mikro-orm/postgresql';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
@@ -7,9 +6,16 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { CreateGlossaryDto } from './../src/glossaries/dto/create-glossary.dto';
 import { CreateTermDto } from './../src/terms/dto/create-term.dto';
+import {
+  GlossariesResponse,
+  GlossaryResponse,
+  TermResponse,
+} from './response-types';
+import { clearDatabase } from './utils/clearDatabase';
 
 describe('GlossariesController (e2e)', () => {
   let app: NestFastifyApplication;
+  let orm: MikroORM;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -18,10 +24,16 @@ describe('GlossariesController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    orm = app.get(MikroORM);
   });
 
   afterAll(async () => {
     await app.close();
+  });
+
+  afterEach(async () => {
+    await clearDatabase(orm);
   });
 
   it('/glossaries (POST)', async () => {
@@ -35,9 +47,10 @@ describe('GlossariesController (e2e)', () => {
       .send(createGlossaryDto)
       .expect(201);
 
-    expect(response.body.data).toHaveProperty('id');
-    expect(response.body.data.sourceLanguageCode).toBe('en');
-    expect(response.body.data.targetLanguageCode).toBe('es');
+    const responseBody = response.body as GlossaryResponse;
+    expect(responseBody.data).toHaveProperty('id');
+    expect(responseBody.data.sourceLanguageCode.code).toBe('en');
+    expect(responseBody.data.targetLanguageCode.code).toBe('es');
   });
 
   it('/glossaries (GET)', async () => {
@@ -45,13 +58,14 @@ describe('GlossariesController (e2e)', () => {
       .get('/glossaries')
       .expect(200);
 
-    expect(response.body.data).toBeInstanceOf(Array);
+    const responseBody = response.body as GlossariesResponse;
+    expect(responseBody.data).toBeInstanceOf(Array);
   });
 
   it('/glossaries/:id (GET)', async () => {
     const createGlossaryDto: CreateGlossaryDto = {
       sourceLanguageCode: 'en',
-      targetLanguageCode: 'de',
+      targetLanguageCode: 'es',
     };
 
     const createResponse = await request(app.getHttpServer())
@@ -59,13 +73,15 @@ describe('GlossariesController (e2e)', () => {
       .send(createGlossaryDto)
       .expect(201);
 
-    const glossaryId = createResponse.body.data.id;
+    const glossaryResponseBody = createResponse.body as GlossaryResponse;
+    const glossaryId = glossaryResponseBody.data.id;
 
     const response = await request(app.getHttpServer())
       .get(`/glossaries/${glossaryId}`)
       .expect(200);
 
-    expect(response.body.data).toHaveProperty('id', glossaryId);
+    const responseBody = response.body as GlossaryResponse;
+    expect(responseBody.data).toHaveProperty('id', glossaryId);
   });
 
   it('/glossaries/:id/terms (POST)', async () => {
@@ -79,7 +95,9 @@ describe('GlossariesController (e2e)', () => {
       .send(createGlossaryDto)
       .expect(201);
 
-    const glossaryId = createGlossaryResponse.body.data.id;
+    const glossaryResponseBody =
+      createGlossaryResponse.body as GlossaryResponse;
+    const glossaryId = glossaryResponseBody.data.id;
 
     const createTermDto: CreateTermDto = {
       sourceTerm: 'hello',
@@ -91,8 +109,9 @@ describe('GlossariesController (e2e)', () => {
       .send(createTermDto)
       .expect(201);
 
-    expect(response.body).toHaveProperty('id');
-    expect(response.body.sourceTerm).toBe('hello');
-    expect(response.body.targetTerm).toBe('hola');
+    const responseBody = response.body as TermResponse;
+    expect(responseBody.data).toHaveProperty('id');
+    expect(responseBody.data.sourceTerm).toBe('hello');
+    expect(responseBody.data.targetTerm).toBe('hola');
   });
 });

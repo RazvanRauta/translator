@@ -1,8 +1,10 @@
 MAKEFLAGS += --silent --keep-going
 
 DOCKER_COMPOSE_LOCAL = $(shell echo ".docker/docker-compose.local.yml")
+DOCKER_COMPOSE_TEST = $(shell echo ".docker/docker-compose.ci.yml")
 
 ENV_FILE_LOCAL = $(shell echo ".env.local")
+ENV_FILE_TEST = $(shell echo ".env.test")
 
 ########################################################################################
 ####                               Local Environment                                ####
@@ -43,3 +45,23 @@ docker-down-local:
  		down --remove-orphans -v
 	@echo "[INFO] Local instance was successfully downed."
 
+########################################################################################
+####                            Test Environment                              		####
+########################################################################################
+.PHONY: docker-run-test docker-down-test
+
+docker-run-test:
+	@docker compose \
+		--file $(DOCKER_COMPOSE_TEST) \
+		--project-directory . \
+		--env-file ${ENV_FILE_TEST} \
+		up \
+		--exit-code-from server_test
+
+docker-down-test:
+	@docker compose \
+		--file $(DOCKER_COMPOSE_TEST) \
+		--project-directory . \
+		--env-file ${ENV_FILE_TEST} \
+ 		down --remove-orphans -v --rmi local
+	@echo "[INFO] Test instance was successfully downed."

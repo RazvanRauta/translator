@@ -1,0 +1,27 @@
+FROM node:lts-alpine AS base
+
+FROM base AS builder
+RUN apk add --no-cache make gcc g++ libc6-compat bash python3 bash
+RUN apk update
+RUN corepack enable pnpm
+ENV PNPM_HOME=/usr/local/bin
+
+# Set working directory
+WORKDIR /app
+
+COPY . /app/
+COPY ./.env.test /app/.env.local
+
+RUN pnpm install
+RUN pnpm build
+
+COPY ./wait-for-it.sh /opt/wait-for-it.sh
+RUN chmod +x /opt/wait-for-it.sh
+
+COPY ./startup.ci.sh /opt/startup.ci.sh
+RUN chmod +x /opt/startup.ci.sh
+
+RUN sed -i 's/\r//g' /opt/wait-for-it.sh
+RUN sed -i 's/\r//g' /opt/startup.ci.sh
+
+CMD ["/opt/startup.ci.sh"]

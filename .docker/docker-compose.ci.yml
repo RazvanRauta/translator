@@ -1,17 +1,17 @@
-name: translator
+name: translator_test
 
 services:
-  postgres:
-    container_name: translator_database
+  postgres_test:
+    container_name: translator_database_test
     image: postgres:latest
-    env_file:
-      - .env.local
     expose:
       - ${DATABASE_PORT}
     ports:
       - '${DATABASE_PORT}:${DATABASE_PORT}'
+    env_file:
+      - .env.test
     volumes:
-      - translator_database_data:/var/lib/postgresql/data
+      - translator_database_data_test:/var/lib/postgresql/data
       - ./.docker/postgres/potgresql.conf:/etc/postgresql.conf
     command: -c config_file=/etc/postgresql.conf
     environment:
@@ -20,32 +20,33 @@ services:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     restart: unless-stopped
     networks:
-      - translator_local
+      - translator_local_test
 
-  server:
-    container_name: translator_server
-    image: translator_server:0.0.1-local
+  server_test:
+    container_name: translator_server_test
+    image: server-test:0.0.1-test
     build:
       context: .
-      dockerfile: ./.docker/server/Dockerfile.local
-    env_file:
-      - .env.local
+      dockerfile: ./.docker/server/Dockerfile.ci
     expose:
       - ${SERVER_PORT}
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     depends_on:
-      - postgres
+      - postgres_test
     volumes:
       - ./:/app
       - /app/node_modules
-    restart: unless-stopped
+      - /app/dist
+    restart: always
     networks:
-      - translator_local
+      - translator_local_test
+    env_file:
+      - .env.test
 
 volumes:
-  translator_database_data:
+  translator_database_data_test:
 
 networks:
-  translator_local:
+  translator_local_test:
     driver: bridge
