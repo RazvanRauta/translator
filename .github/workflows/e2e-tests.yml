@@ -1,0 +1,17 @@
+name: E2E Tests
+on:
+  pull_request:
+  push: { branches: [main] }
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Compose
+        run: sudo apt-get install docker-compose -y
+      - name: Build and run tests
+        run: make docker-run-test
+      - name: Stop and remove containers
+        if: success() || failure()
+        run: make docker-down-test
+ 
