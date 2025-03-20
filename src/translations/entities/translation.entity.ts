@@ -1,7 +1,8 @@
+import { Entity, ManyToOne, Property } from '@mikro-orm/postgresql';
+
 import { Glossary } from '@/glossaries/entities/glossary.entity';
 import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
 import { BaseEntity } from '@/shared/entities/base-entity';
-import { Entity, ManyToOne, Property } from '@mikro-orm/postgresql';
 
 @Entity()
 export class Translation extends BaseEntity {

@@ -1,14 +1,16 @@
+import { EntityManager } from '@mikro-orm/postgresql';
 import {
   ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateGlossaryDto } from './dto/create-glossary.dto';
-import { EntityManager } from '@mikro-orm/postgresql';
-import { Glossary } from './entities/glossary.entity';
+
 import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
-import { TermsService } from '@/terms/terms.service';
 import { CreateTermDto } from '@/terms/dto/create-term.dto';
+import { TermsService } from '@/terms/terms.service';
+
+import { CreateGlossaryDto } from './dto/create-glossary.dto';
+import { Glossary } from './entities/glossary.entity';
 
 @Injectable()
 export class GlossariesService {

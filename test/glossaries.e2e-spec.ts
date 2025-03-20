@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
+
 import { AppModule } from './../src/app.module';
 import { CreateGlossaryDto } from './../src/glossaries/dto/create-glossary.dto';
 import { CreateTermDto } from './../src/terms/dto/create-term.dto';
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
 
 describe('GlossariesController (e2e)', () => {
   let app: NestFastifyApplication;

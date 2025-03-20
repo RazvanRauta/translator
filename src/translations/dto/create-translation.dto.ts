@@ -1,5 +1,6 @@
+import { IsOptional, IsString, MaxLength, Validate } from 'class-validator';
+
 import { IsLanguageCode } from '@/shared/validators/is-language-code.validator';
-import { IsString, IsOptional, MaxLength, Validate } from 'class-validator';
 
 export class CreateTranslationDto {
   @IsString()

@@ -1,10 +1,11 @@
-import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
 import { EntityManager } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+
+import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
 
 @ValidatorConstraint({ name: 'isLanguageCode', async: true })
 @Injectable()

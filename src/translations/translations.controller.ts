@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { TranslationsService } from './translations.service';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+
 import { CreateTranslationDto } from './dto/create-translation.dto';
+import { TranslationsService } from './translations.service';
 
 @Controller({
   path: 'translations',

@@ -1,6 +1,3 @@
-import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
-import { BaseEntity } from '@/shared/entities/base-entity';
-import { Term } from '@/terms/entities/term.entity';
 import {
   Collection,
   Entity,
@@ -8,6 +5,10 @@ import {
   OneToMany,
   Unique,
 } from '@mikro-orm/postgresql';
+
+import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
+import { BaseEntity } from '@/shared/entities/base-entity';
+import { Term } from '@/terms/entities/term.entity';
 
 @Entity()
 @Unique({ properties: ['sourceLanguageCode', 'targetLanguageCode'] })

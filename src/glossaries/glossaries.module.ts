@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
-import { GlossariesService } from './glossaries.service';
-import { GlossariesController } from './glossaries.controller';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { Glossary } from './entities/glossary.entity';
+import { Module } from '@nestjs/common';
+
 import { TermsModule } from '@/terms/terms.module';
+
+import { Glossary } from './entities/glossary.entity';
+import { GlossariesController } from './glossaries.controller';
+import { GlossariesService } from './glossaries.service';
 
 @Module({
   imports: [MikroOrmModule.forFeature([Glossary]), TermsModule],

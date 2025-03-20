@@ -1,5 +1,6 @@
-import { BaseEntity } from '@/shared/entities/base-entity';
 import { Entity, Property } from '@mikro-orm/core';
+
+import { BaseEntity } from '@/shared/entities/base-entity';
 
 @Entity()
 export class LanguageCode extends BaseEntity {

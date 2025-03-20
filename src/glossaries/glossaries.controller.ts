@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { GlossariesService } from './glossaries.service';
-import { CreateGlossaryDto } from './dto/create-glossary.dto';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+
 import { CreateTermDto } from '@/terms/dto/create-term.dto';
+
+import { CreateGlossaryDto } from './dto/create-glossary.dto';
+import { GlossariesService } from './glossaries.service';
 
 @Controller({
   path: 'glossaries',

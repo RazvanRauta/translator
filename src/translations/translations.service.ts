@@ -1,13 +1,15 @@
+import { EntityManager } from '@mikro-orm/core';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateTranslationDto } from './dto/create-translation.dto';
-import { EntityManager } from '@mikro-orm/core';
+
 import { Glossary } from '@/glossaries/entities/glossary.entity';
-import { Translation } from './entities/translation.entity';
 import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
+
+import { CreateTranslationDto } from './dto/create-translation.dto';
+import { Translation } from './entities/translation.entity';
 
 @Injectable()
 export class TranslationsService {

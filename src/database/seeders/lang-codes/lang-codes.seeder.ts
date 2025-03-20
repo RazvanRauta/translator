@@ -1,8 +1,9 @@
-import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Seeder } from '@mikro-orm/seeder';
-import * as fs from 'fs';
 import { parse } from 'csv-parse';
+import * as fs from 'fs';
+
+import { LanguageCode } from '@/lang-codes/entities/lang-code.entity';
 
 export type LanguageCodeRow = {
   code: string;

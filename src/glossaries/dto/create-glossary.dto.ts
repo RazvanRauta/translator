@@ -1,4 +1,5 @@
 import { IsString, Validate } from 'class-validator';
+
 import { IsLanguageCode } from '../../shared/validators/is-language-code.validator';
 
 export class CreateGlossaryDto {
