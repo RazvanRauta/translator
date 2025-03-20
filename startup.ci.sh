@@ -8,7 +8,7 @@ npm run start:prod 2>&1 | tee &
 npm run test:e2e:ci -- --runInBand
 if [ $? -eq 0 ]
 then
-  echo "Tests job succeded."
+  echo "🚀🚀 Tests job succeeded. 🚀🚀"
   exit 0
 else
   echo "⚠️ ⚠️ Tests job failed. ⚠️ ⚠️" >&2

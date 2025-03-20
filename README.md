@@ -37,3 +37,13 @@ make docker-down-local
 ## Bruno
 
 - Bruno collection can be found [HERE](./bruno)
+
+## E2E Tests
+
+```bash
+# to run the tests, run this command in your terminal:
+make docker-run-test
+
+# to delete the test env:
+make docker-down-local 
+```
