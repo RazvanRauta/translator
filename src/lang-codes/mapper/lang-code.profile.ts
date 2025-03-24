@@ -1,9 +1,9 @@
 import {
-  createMap,
-  extend,
-  Mapper,
-  MappingConfiguration,
-  MappingProfile,
+	createMap,
+	extend,
+	Mapper,
+	MappingConfiguration,
+	MappingProfile,
 } from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
@@ -16,17 +16,17 @@ import { LanguageCode } from '../entities/lang-code.entity';
 
 @Injectable()
 export class LangCodeProfile extends AutomapperProfile {
-  constructor(@InjectMapper() mapper: Mapper) {
-    super(mapper);
-  }
+	constructor(@InjectMapper() mapper: Mapper) {
+		super(mapper);
+	}
 
-  get profile(): MappingProfile {
-    return (mapper) => {
-      createMap(mapper, LanguageCode, LangCodeDto);
-    };
-  }
+	get profile(): MappingProfile {
+		return (mapper) => {
+			createMap(mapper, LanguageCode, LangCodeDto);
+		};
+	}
 
-  protected get mappingConfigurations(): MappingConfiguration[] {
-    return [extend(BaseEntity, BaseDto)];
-  }
+	protected get mappingConfigurations(): MappingConfiguration[] {
+		return [extend(BaseEntity, BaseDto)];
+	}
 }

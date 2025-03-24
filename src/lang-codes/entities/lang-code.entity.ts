@@ -5,14 +5,14 @@ import { BaseEntity } from '@/shared/entities/base-entity';
 
 @Entity()
 export class LanguageCode extends BaseEntity {
-  @AutoMap(() => String)
-  @Property({
-    unique: true,
-    index: true,
-  })
-  code!: string;
+	@AutoMap(() => String)
+	@Property({
+		unique: true,
+		index: true,
+	})
+	code!: string;
 
-  @AutoMap(() => String)
-  @Property()
-  country!: string;
+	@AutoMap(() => String)
+	@Property()
+	country!: string;
 }

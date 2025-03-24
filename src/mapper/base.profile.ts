@@ -7,13 +7,13 @@ import { BaseEntity } from '@/shared/entities/base-entity';
 
 @Injectable()
 export class BaseProfile extends AutomapperProfile {
-  constructor(@InjectMapper() mapper: Mapper) {
-    super(mapper);
-  }
+	constructor(@InjectMapper() mapper: Mapper) {
+		super(mapper);
+	}
 
-  get profile(): MappingProfile {
-    return (mapper) => {
-      createMap(mapper, BaseEntity, BaseDto);
-    };
-  }
+	get profile(): MappingProfile {
+		return (mapper) => {
+			createMap(mapper, BaseEntity, BaseDto);
+		};
+	}
 }

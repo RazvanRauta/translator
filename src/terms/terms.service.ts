@@ -11,17 +11,17 @@ import { Term } from './entities/term.entity';
 
 @Injectable()
 export class TermsService {
-  constructor(
-    private readonly em: EntityManager,
-    @InjectMapper() private mapper: Mapper,
-  ) {}
+	constructor(
+		private readonly em: EntityManager,
+		@InjectMapper() private mapper: Mapper,
+	) {}
 
-  async create(createTermDto: CreateTermDto, glossary: Glossary) {
-    const term = this.em.create(Term, {
-      ...createTermDto,
-      glossary,
-    });
-    await this.em.persistAndFlush(term);
-    return this.mapper.map(term, Term, TermDto);
-  }
+	async create(createTermDto: CreateTermDto, glossary: Glossary) {
+		const term = this.em.create(Term, {
+			...createTermDto,
+			glossary,
+		});
+		await this.em.persistAndFlush(term);
+		return this.mapper.map(term, Term, TermDto);
+	}
 }

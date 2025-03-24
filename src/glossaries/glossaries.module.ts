@@ -8,8 +8,8 @@ import { GlossariesController } from './glossaries.controller';
 import { GlossariesService } from './glossaries.service';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Glossary]), TermsModule],
-  controllers: [GlossariesController],
-  providers: [GlossariesService],
+	imports: [MikroOrmModule.forFeature([Glossary]), TermsModule],
+	controllers: [GlossariesController],
+	providers: [GlossariesService],
 })
 export class GlossariesModule {}

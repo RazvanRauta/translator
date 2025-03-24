@@ -127,7 +127,7 @@ importers:
         specifier: ^10.0.1
         version: 10.1.1(eslint@9.22.0)
       eslint-plugin-prettier:
-        specifier: ^5.2.2
+        specifier: ^5.2.3
         version: 5.2.3(@types/eslint@9.6.1)(eslint-config-prettier@10.1.1(eslint@9.22.0))(eslint@9.22.0)(prettier@3.5.3)
       eslint-plugin-simple-import-sort:
         specifier: ^12.1.1

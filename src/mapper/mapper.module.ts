@@ -10,24 +10,24 @@ import { TranslationProfile } from '@/translations/mapper/translation.profile';
 import { BaseProfile } from './base.profile';
 
 @Module({
-  imports: [
-    AutomapperModule.forRoot({
-      strategyInitializer: mikro(),
-    }),
-  ],
-  providers: [
-    BaseProfile,
-    TermProfile,
-    LangCodeProfile,
-    GlossaryProfile,
-    TranslationProfile,
-  ],
-  exports: [
-    BaseProfile,
-    TermProfile,
-    LangCodeProfile,
-    GlossaryProfile,
-    TranslationProfile,
-  ],
+	imports: [
+		AutomapperModule.forRoot({
+			strategyInitializer: mikro(),
+		}),
+	],
+	providers: [
+		BaseProfile,
+		TermProfile,
+		LangCodeProfile,
+		GlossaryProfile,
+		TranslationProfile,
+	],
+	exports: [
+		BaseProfile,
+		TermProfile,
+		LangCodeProfile,
+		GlossaryProfile,
+		TranslationProfile,
+	],
 })
 export class MapperModule {}

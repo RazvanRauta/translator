@@ -7,10 +7,10 @@ import deepResolvePromises from './deep-resolver';
 
 @Injectable()
 export class ResolvePromisesInterceptor implements NestInterceptor {
-  intercept(
-    _context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<unknown> {
-    return next.handle().pipe(map((data) => deepResolvePromises(data)));
-  }
+	intercept(
+		_context: ExecutionContext,
+		next: CallHandler,
+	): Observable<unknown> {
+		return next.handle().pipe(map((data) => deepResolvePromises(data)));
+	}
 }

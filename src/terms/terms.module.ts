@@ -5,8 +5,8 @@ import { Term } from './entities/term.entity';
 import { TermsService } from './terms.service';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Term])],
-  providers: [TermsService],
-  exports: [TermsService],
+	imports: [MikroOrmModule.forFeature([Term])],
+	providers: [TermsService],
+	exports: [TermsService],
 })
 export class TermsModule {}

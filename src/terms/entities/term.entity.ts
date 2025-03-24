@@ -6,18 +6,18 @@ import { BaseEntity } from '@/shared/entities/base-entity';
 
 @Entity()
 export class Term extends BaseEntity {
-  @ManyToOne(() => Glossary, {
-    nullable: true,
-    deleteRule: 'cascade',
-    updateRule: 'cascade',
-  })
-  glossary!: Glossary;
+	@ManyToOne(() => Glossary, {
+		nullable: true,
+		deleteRule: 'cascade',
+		updateRule: 'cascade',
+	})
+	glossary!: Glossary;
 
-  @AutoMap(() => String)
-  @Property()
-  sourceTerm!: string;
+	@AutoMap(() => String)
+	@Property()
+	sourceTerm!: string;
 
-  @AutoMap(() => String)
-  @Property()
-  targetTerm!: string;
+	@AutoMap(() => String)
+	@Property()
+	targetTerm!: string;
 }
